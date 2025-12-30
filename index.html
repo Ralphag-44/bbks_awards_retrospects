@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premiação 2025 - Votação</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #4c51bf 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 50px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 3.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .candidate-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .candidate-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid #fbbf24;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
+        }
+
+        .candidate-details h2 {
+            color: white;
+            font-size: 2.5em;
+            text-align: left;
+        }
+
+        .candidate-details p {
+            color: #fbbf24;
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        .chart-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+
+        .chart-title {
+            color: white;
+            font-size: 1.8em;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 12px;
+            height: 350px;
+        }
+
+        .bar-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .voter-photo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
+        }
+
+        .voter-photo.self-vote {
+            border: 3px solid #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .bar-wrapper {
+            width: 100%;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .vote-count {
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 8px;
+        }
+
+        .bar {
+            width: 100%;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.5s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .bar:hover {
+            filter: brightness(1.2);
+            transform: scaleY(1.02);
+        }
+
+        .voter-name {
+            color: white;
+            font-size: 0.85em;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .navigation {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .nav-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: #fbbf24;
+            width: 32px;
+            border-radius: 6px;
+        }
+
+        .slide-counter {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1em;
+        }
+
+        /* Estilos para a tela final */
+        .final-screen {
+            display: none;
+        }
+
+        .final-screen.active {
+            display: block;
+        }
+
+        .final-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .final-header h1 {
+            color: white;
+            font-size: 3.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .final-header p {
+            color: #fbbf24;
+            font-size: 1.3em;
+        }
+
+        .final-chart-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            max-height: 600px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .final-chart-container::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .final-chart-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .final-chart-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .final-chart-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .final-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 10px;
+            min-height: 450px;
+        }
+
+        .final-bar-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 80px;
+            height: 100%;
+        }
+
+        .final-participant-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+            flex-shrink: 0;
+            object-fit: cover;
+        }
+
+        .final-bar-wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            justify-content: flex-end;
+        }
+
+        .final-awards-count {
+            color: white;
+            font-weight: bold;
+            font-size: 1.3em;
+            margin-bottom: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            flex-shrink: 0;
+        }
+
+        .final-bar {
+            width: 100%;
+            background: linear-gradient(to top, #fbbf24, #f59e0b);
+            border-radius: 8px;
+            transition: all 0.5s ease;
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+            min-height: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 5px;
+        }
+
+        .final-bar:hover {
+            filter: brightness(1.2);
+        }
+
+        .final-participant-name {
+            color: white;
+            font-size: 0.9em;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+
+        .final-award-item {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 0.7em;
+            text-align: center;
+            font-weight: 600;
+            word-wrap: break-word;
+            max-width: 100%;
+            line-height: 1.2;
+        }
+
+        .final-no-awards {
+            color: rgba(255, 255, 255, 0.6);
+            font-style: italic;
+            font-size: 0.75em;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .slide-view {
+            display: block;
+        }
+
+        .slide-view.hidden {
+            display: none;
+        }
+
+        .color-0 { background: linear-gradient(to top, #ef4444, #dc2626); }
+        .color-1 { background: linear-gradient(to top, #3b82f6, #2563eb); }
+        .color-2 { background: linear-gradient(to top, #10b981, #059669); }
+        .color-3 { background: linear-gradient(to top, #eab308, #ca8a04); }
+        .color-4 { background: linear-gradient(to top, #a855f7, #9333ea); }
+        .color-5 { background: linear-gradient(to top, #ec4899, #db2777); }
+        .color-6 { background: linear-gradient(to top, #6366f1, #4f46e5); }
+        .color-7 { background: linear-gradient(to top, #f97316, #ea580c); }
+        .color-8 { background: linear-gradient(to top, #14b8a6, #0d9488); }
+        .color-9 { background: linear-gradient(to top, #06b6d4, #0891b2); }
+        .color-10 { background: linear-gradient(to top, #84cc16, #65a30d); }
+        .color-11 { background: linear-gradient(to top, #f43f5e, #e11d48); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Visualização dos Slides -->
+        <div id="slideView" class="slide-view">
+            <div class="header">
+                <h1>Premiação 2025</h1>
+                <div class="candidate-info">
+                    <img id="candidatePhoto" class="candidate-photo" src="" alt="Candidato">
+                    <div class="candidate-details">
+                        <h2 id="candidateName"></h2>
+                        <p>Total: <span id="totalVotes"></span> votos</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">Distribuição de Votos por Participante</h3>
+                <div class="chart" id="chart"></div>
+            </div>
+
+            <div class="navigation">
+                <button class="nav-button" onclick="prevSlide()">
+                    ← Anterior
+                </button>
+                <div class="dots" id="dots"></div>
+                <button class="nav-button" onclick="nextSlide()">
+                    Próximo →
+                </button>
+            </div>
+
+            <div class="slide-counter">
+                Candidato <span id="currentSlide">1</span> de <span id="totalSlides">12</span>
+            </div>
+        </div>
+
+        <!-- Tela Final com Todos os Participantes -->
+        <div id="finalScreen" class="final-screen">
+            <div class="final-header">
+                <h1>🏆 Premiações Conquistadas 🏆</h1>
+                <p>Resumo Geral de Todas as Conquistas</p>
+            </div>
+
+            <div class="final-chart-container">
+                <div class="final-chart" id="finalChart"></div>
+            </div>
+
+            <button class="back-button" onclick="backToSlides()">
+                ← Voltar para os Slides
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        let candidates = [];
+
+        // Dados brutos das respostas
+        const rawDataString = '[["\\"Neto","\\"Zico Calma Calabreso (a dancinha)","\\"Capitão Woke(JOÃO ROBERTO JORGE BORGES NETO)","\\"Esquerda Radical","\\"Rafael Santos","\\"Charle Kirk","\\"Paolla Varela","\\"Clair Obscur: Expedition 33","\\"Leonardo","\\"Toxic - Britney Spears","\\"Kanye Omari West","\\"Pedro Henrique","\\"Jessy","\\"Filipe da Rocha","\\"Arthur Gonçalves","\\"Paolla \\"\\"Lua\\"\\" Varela","\\"Rafael, Azedo, Baleia","\\"Calvo Vs Paolla (barranco)","\\"Paolla \\"\\"amigo do neto\\"\\" Varela (Lésbica, Nao-Binário, Trans, Queer, Assexual)","\\"Rafael Santos","\\"Thiago Sopeña","\\"Pedro Santos","\\"Rafael Santos","\\"Arthur Gonçalves","\\"João Neto","\\"Gabriel Rodrigues","\\"Barranco","\\"Paolla Varela","\\"Neto","\\"Gabriel Rodrigues","\\"Gabriel Rodrigues\\""],["\\"Canto","\\"Canto Imitando Nego Abusado","\\"Repulsa(RAFAEL PEREIRA DOS SANTOS)","\\"Centro/Foda-se","\\"Gabriel Rodrigues","\\"Charle Kirk","\\"Arthur Gonçalves","\\"Silksong","\\"Mauro","\\"Expresso - Sabrina Carptener","\\"Kanye Omari West","\\"Pedro Henrique","\\"Jessy","\\"Filipe da Rocha","\\"Wendel Lemos","\\"Thiago \\"\\"Quinto\\"\\" Sopenã","\\"Canto, Xuxu, Azevedo","\\"Rafael vs Babacas (pós resenha da turma)","\\"Labubu \\"\\"Arthurzinho\\"\\" Gonçalves (???)","\\"Gabriel Canto","\\"Arthur Gonçalves","\\"Pedro Santos","\\"Gabriel Canto","\\"Gabriel Canto","\\"João Neto","\\"Gabriel Rodrigues","\\"Barranco","\\"Rafael Santos","\\"Wendel","\\"Gabriel Canto","\\"Gabriel Canto\\""],["\\"Theo","\\"Canto Agarrado no Azevedo","\\"Repulsa(RAFAEL PEREIRA DOS SANTOS)","\\"Extrema Direita","\\"Thiago Sopeña","\\"Michel Telo","\\"Arthur Gonçalves","\\"Silksong","\\"Rafael Emo","\\"Expresso - Sabrina Carptener","\\"Kanye Omari West","\\"Pedro Henrique","\\"Arthur Azevedo","\\"João Pedro","\\"João Neto","\\"Thiago \\"\\"Quinto\\"\\" Sopenã","\\"Canto, Xuxu, Azevedo","\\"Rafael vs Baleia","\\"Labubu \\"\\"Arthurzinho\\"\\" Gonçalves (???)","\\"Thiago Sopeña","\\"Theo Fischer","\\"Theo Fischer","\\"João Pedro","\\"João Pedro","\\"Gabriel Canto","\\"Theo Fischer","\\"Resenha da turma","\\"Pedro Santos","\\"Gonçalves","\\"Theo Fischer","\\"Gabriel Rodrigues\\""],["\\"JP","\\"Canto Imitando Nego Abusado","\\"Labubu(ARTHUR GONÇALVES COSTA)","\\"Centro/Foda-se","\\"Gabriel Canto","\\"Ozzy Osbourne","\\"Pedro Santos","\\"Jogo Foda-se da Nintendo","\\"Leonardo","\\"Expresso - Sabrina Carptener","\\"Kanye Omari West","\\"Eduarda Schroeder (não gosta do callvo 🥲)","\\"Prof. Doutor betito","\\"Filipe da Rocha","\\"Wendel Lemos","\\"Paolla \\"\\"Lua\\"\\" Varela","\\"Calvo, Gago, Gabizinha","\\"Zico vs Trabalho Honesto","\\"Gabriel \\"\\"Calvo\\"\\" Rodrigues (50% Bissexual)","\\"Theo Fischer","\\"João Pedro","\\"Rafael Santos","\\"Theo Fischer","\\"Arthur Gonçalves","\\"Gabriel Rodrigues","\\"Filipe Centeno","\\"zico jogando GTA V all night","\\"Pedro Santos","\\"Gonçalves","\\"João Pedro","\\"João Pedro\\""],["\\"Wendel","\\"Zico Calma Calabreso (a dancinha)","\\"Repulsa(RAFAEL PEREIRA DOS SANTOS)","\\"Direita","\\"Gabriel Rodrigues","\\"Charle Kirk","\\"Pedro Santos","\\"Silksong","\\"Leonardo","\\"Expresso - Sabrina Carptener","\\"Kanye Omari West","\\"Eduardo Wenzel Brião","\\"Prof. Doutor betito","\\"Filipe da Rocha","\\"Wendel Lemos","\\"Thiago \\"\\"Quinto\\"\\" Sopenã","\\"Calvo, Gago, Gabizinha","\\"Calvo Vs Canto (barranco)","\\"Paolla \\"\\"amigo do neto\\"\\" Varela (Lésbica, Nao-Binário, Trans, Queer, Assexual)","\\"Wendel Lemos","\\"Thiago Sopeña","\\"Pedro Santos","\\"Thiago Sopeña","\\"Arthur Gonçalves","\\"Wendel Lemos","\\"Gabriel Rodrigues","\\"Barranco","\\"Paolla Varela","\\"Wendel","\\"Filipe Centeno","\\"Gabriel Rodrigues\\""],["\\"Calvo","\\"Zico Calma Calabreso (a dancinha)","\\"Repulsa(RAFAEL PEREIRA DOS SANTOS)","\\"Esquerda Radical","\\"Gabriel Rodrigues","\\"Charle Kirk","\\"Paolla Varela","\\"Blue Prince","\\"Leonardo","\\"Tiktok - Ke$ha","\\"Kanye Omari West","\\"Pedro Henrique","\\"Jessy","\\"Rafael Santos","\\"Wendel Lemos","\\"Paolla \\"\\"Lua\\"\\" Varela","\\"Calvo, Gago, Gabizinha","\\"Rafael vs Babacas (pós resenha da turma)","\\"Pedro \\"\\"viado!\\"\\" Santos (viado)","\\"Theo Fischer","\\"Arthur Gonçalves","\\"Gabriel Canto","\\"João Neto","\\"Arthur Gonçalves","\\"Wendel Lemos","\\"Gabriel Rodrigues","\\"Barranco","\\"Pedro Santos","\\"Neto","\\"Gabriel Rodrigues","\\"Gabriel Rodrigues\\""],["\\"Labubu","\\"Canto Beijando Rafael","\\"Repulsa(RAFAEL PEREIRA DOS SANTOS)","\\"Esquerda Radical","\\"Gabriel Canto","\\"Charle Kirk","\\"Paolla Varela","\\"Blue Prince","\\"Leonardo","\\"Expresso - Sabrina Carptener","\\"Taylor Alison Swift","\\"Eduardo Wenzel Brião","\\"Prof. Doutor betito","\\"Filipe da Rocha","\\"Wendel Lemos","\\"Paolla \\"\\"Lua\\"\\" Varela","\\"Rafael, Azedo, Baleia","\\"Rafael vs Babacas (pós resenha da turma)","\\"Paolla \\"\\"amigo do neto\\"\\" Varela (Lésbica, Nao-Binário, Trans, Queer, Assexual)","\\"Gabriel Canto","\\"João Pedro","\\"Pedro Santos","\\"Filipe Centeno","\\"Filipe Centeno","\\"Rafael Santos","\\"Filipe Centeno","\\"Barranco","\\"Rafael Santos","\\"Wendel","\\"Filipe Centeno","\\"Gabriel Canto\\""],["\\"Zico","\\"Zico Calma Calabreso (a dancinha)","\\"Capitão Woke(JOÃO ROBERTO JORGE BORGES NETO)","\\"Extrema Direita","\\"Gabriel Canto","\\"Papa Francisco","\\"Pedro Santos","\\"Jogo Foda-se da Nintendo","\\"Leonardo","\\"Expresso - Sabrina Carptener","\\"Taylor Alison Swift","\\"Eduarda Schroeder (não gosta do calvo 🥲)","\\"Prof. Doutor betito","\\"João Pedro","\\"Wendel Lemos","\\"Thiago \\"\\"Quinto\\"\\" Sopenã","\\"Canto, Xuxu, Azevedo","\\"Rafael vs Babacas (pós resenha da turma)","\\"Paolla \\"\\"amigo do neto\\"\\" Varela (Lésbica, Nao-Binário, Trans, Queer, Assexual)","\\"Gabriel Canto","\\"Thiago Sopeña","\\"Rafael Santos","\\"Thiago Sopeña","\\"Gabriel Rodrigues","\\"Gabriel Canto","\\"Filipe Centeno","\\"zico jogando GTA V all night","\\"Paolla Varela","\\"Gonçalves","\\"Thiago Sopeña","\\"João Pedro\\""],["\\"Paolla","\\"Canto Imitando Nego Abusado","\\"Labubu(ARTHUR GONÇALVES COSTA)","\\"Esquerda","\\"Gabriel Rodrigues","\\"Charle Kirk","\\"Gabriel Rodrigues","\\"Blue Prince","\\"Leonardo","\\"Toxic - Britney Spears","\\"Taylor Alison Swift","\\"Pedro Henrique","\\"Prof. Doutor betito","\\"Filipe da Rocha","\\"João Neto","\\"Thiago \\"\\"Quinto\\"\\" Sopenã","\\"Calvo, Gago, Gabizinha","\\"Calvo Vs Canto (barranco)","\\"Paolla \\"\\"amigo do neto\\"\\" Varela (Lésbica, Nao-Binário, Trans, Queer, Assexual)","\\"Thiago Sopeña","\\"Arthur Gonçalves","\\"Rafael Santos","\\"Wendel Lemos","\\"Arthur Gonçalves","\\"Gabriel Canto","\\"Gabriel Rodrigues","\\"Barranco","\\"Pedro Santos","\\"Neto","\\"Gabriel Canto","\\"Filipe Centeno\\""],["\\"Pedro","\\"Canto Imitando Nego Abusado","\\"Capitão Woke(JOÃO ROBERTO JORGE BORGES NETO)","\\"Esquerda","\\"Gabriel Rodrigues","\\"Ozzy Osbourne","\\"Pedro Santos","\\"Blue Prince","\\"Azevedo","\\"Expresso - Sabrina Carptener","\\"Taylor Alison Swift","\\"Eduardo Wenzel Brião","\\"Jessy","\\"Rafael Santos","\\"Wendel Lemos","\\"Paolla \\"\\"Lua\\"\\" Varela","\\"Rafael, Azedo, Baleia","\\"Calvo Vs Paolla (barranco)","\\"Pedro \\"\\"viado!\\"\\" Santos (viado)","\\"Wendel Lemos","\\"Arthur Gonçalves","\\"Pedro Santos","\\"João Neto","\\"João Neto","\\"Gabriel Canto","\\"Wendel Lemos","\\"Resenha da turma","\\"Pedro Santos","\\"Neto","\\"Gabriel Rodrigues","\\"Gabriel Rodrigues\\""],["\\"Thiago","\\"Zico Calma Calabreso (a dancinha)","\\"Repulsa(RAFAEL PEREIRA DOS SANTOS)","\\"Centro/Foda-se","\\"Gabriel Rodrigues","\\"Charle Kirk","\\"Gabriel Rodrigues","\\"Silksong","\\"Leonardo","\\"Expresso - Sabrina Carptener","\\"Kanye Omari West","\\"Pedro Henrique","\\"Prof. Doutor betito","\\"Filipe da Rocha","\\"Wendel Lemos","\\"Paolla \\"\\"Lua\\"\\" Varela","\\"Neto, Paolla, Pedro","\\"Zico vs Trabalho Honesto","\\"Gabriel \\"\\"Calvo\\"\\" Rodrigues (50% Bissexual)","\\"Thiago Sopeña","\\"Thiago Sopeña","\\"Gabriel Canto","\\"Theo Fischer","\\"Theo Fischer","\\"Gabriel Rodrigues","\\"Gabriel Rodrigues","\\"Resenha da turma","\\"Pedro Santos","\\"Neto","\\"Gabriel Rodrigues","\\"Thiago Sopeña\\""],["\\"Rafael","\\"Canto Agarrado no Azevedo","\\"Azedo(o azevedo)","\\"Centro/Foda-se","\\"Gabriel Rodrigues","\\"Papa Francisco","\\"João Pedro","\\"Jogo Foda-se da Nintendo","\\"Azevedo","\\"Expresso - Sabrina Carptener","\\"Kanye Omari West","\\"Eduardo Wenzel Brião","\\"Jessy","\\"Rafael Santos","\\"Pedro Santos","\\"Paolla \\"\\"Lua\\"\\" Varela","\\"Canto, Xuxu, Azevedo","\\"Rafael vs Babacas (pós resenha da turma)","\\"Pedro \\"\\"viado!\\"\\" Santos (viado)","\\"Rafael Santos","\\"Filipe Centeno","\\"Gabriel Canto","\\"Rafael Santos","\\"Gabriel Rodrigues","\\"Gabriel Rodrigues","\\"Gabriel Rodrigues","\\"Beach +","\\"Rafael Santos","\\"Neto","\\"Gabriel Canto","\\"Gabriel Canto\\""]]';
+
+        // Processar os dados brutos
+// Processar os dados brutos
+function processRawData() {
+    // Parse do JSON
+    const rawData = JSON.parse(rawDataString);
+    
+    // Mapeamento de nomes e variações
+    const nameMapping = {
+        // Nome principal: [variações, apelidos]
+        "Calvo": ["Calvo", "Gabriel Rodrigues", "Rodrigues"],
+        "Canto": ["Canto", "Gabriel Canto"],
+        "Labubu": ["Labubu", "Arthur Gonçalves","Gonçalves", "Arthurzinho"],
+        "Pedro": ["Pedro Santos"],
+        "Rafael": ["Rafael", "Rafael Santos", "Rafael Pereira dos Santos"],
+        "Zico": ["Zico", "Filipe da Rocha", "Filipe", "Zico Calma Calabreso"],
+        "Paolla": ["Paolla", "Paolla Varela", "Lua"],
+        "Neto": ["Neto", "João Neto", "João Roberto Jorge Borges Neto", "Capitão Woke"],
+        "Wendel": ["Wendel", "Wendel Lemos"],
+        "JP": ["JP", "João Pedro"],
+        "Theo": ["Theo", "Theo Fischer"],
+        "Thiago": ["Thiago", "Thiago Sopeña", "Sopeña", "Quinto"]
+    };
+    
+    // Inverter o mapeamento para busca
+    const searchMap = {};
+    Object.keys(nameMapping).forEach(name => {
+        nameMapping[name].forEach(variant => {
+            searchMap[variant.toLowerCase()] = name;
+        });
+    });
+    
+    // Ordem dos votantes nos dados brutos
+    const voterOrder = ["Neto", "Canto", "Theo", "JP", "Wendel", "Calvo", "Labubu", "Zico", "Paolla", "Pedro", "Thiago", "Rafael"];
+    
+    // Ordem final para exibição (igual ao gráfico anterior)
+    const displayOrder = ["Calvo", "Canto", "Labubu", "Pedro", "Rafael", "Zico", "Paolla", "Neto", "Wendel", "JP", "Theo", "Thiago"];
+    
+    // Inicializar matriz de votos 12x12
+    const voteMatrix = Array(12).fill().map(() => Array(12).fill(0));
+    
+    // LOG: Adicionar para monitorar os votos do Rafael para o Canto
+    const rafaelCantoLog = [];
+    
+    // Processar cada votante
+    rawData.forEach((voterResponses, voterIndex) => {
+        const voterName = voterResponses[0].replace(/"/g, '');
+        const voterDisplayIndex = displayOrder.indexOf(voterName);
+        
+        // Verificar se é o Rafael
+        const isRafael = voterName === "Rafael";
+        
+        // Processar cada resposta do votante (ignorando a primeira que é o nome)
+        for (let i = 1; i < voterResponses.length; i++) {
+            const response = voterResponses[i].toLowerCase();
+            
+            // Procurar por menções de cada participante
+            const mentioned = new Set();
+            
+            // Verificar cada variação de nome
+            Object.keys(searchMap).forEach(variant => {
+                if (response.includes(variant.toLowerCase())) {
+                    const mainName = searchMap[variant.toLowerCase()];
+                    const targetIndex = displayOrder.indexOf(mainName);
+                    mentioned.add(targetIndex);
+                    
+                }
+            });
+            
+            // Contar votos para cada pessoa mencionada
+            mentioned.forEach(targetIndex => {
+                voteMatrix[voterDisplayIndex][targetIndex]++;
+                
+                // LOG: Se for Rafael votando em Canto
+                if (isRafael && displayOrder[targetIndex] === "Canto") {
+                    rafaelCantoLog.push({
+                        option: voterResponses[i],
+                        responseIndex: i,
+                        fullResponse: voterResponses[i]
+                    });
+                }
+            });
+        }
+    });
+    
+    // Mostrar o log no console
+    if (rafaelCantoLog.length > 0) {
+        console.log("=== LOG: Rafael votando em Canto ===");
+        console.log(`Total de votos encontrados: ${rafaelCantoLog.length}`);
+        console.log("Opções onde Rafael votou em Canto:");
+        rafaelCantoLog.forEach(log => {
+            console.log(`- Opção ${log.responseIndex}: "${log.fullResponse}"`);
+        });
+        console.log("=== FIM DO LOG ===");
+    } else {
+        console.log("Nenhum voto de Rafael para Canto encontrado.");
+    }
+    
+    // Gerar dados dos candidatos
+    const candidatesData = displayOrder.map((name, index) => {
+        const votesFrom = [];
+        let totalVotes = 0;
+        
+        // Coletar votos recebidos de cada pessoa
+        for (let i = 0; i < 12; i++) {
+            const votesReceived = voteMatrix[i][index];
+            votesFrom.push(votesReceived);
+            totalVotes += votesReceived;
+        }
+
+    const premiaçõesFixas = {
+    "Calvo": ["Babaca mais Betito", "Melhor Ex-Trio dos Babacas", "Bacaca mais Engraçado", "Melhor Babaca Old School", "BBK DE OURO"],
+    "Canto": ["Melhor Ex-Trio dos Babacas", "Melhor Babaca Normal", "Bacaca que mais uniu o Grupo "],
+    "Labubu": ["Bacaca mais bicho do Mato", "Bacaca mais Fofo do Ano"],
+    "Pedro": ["Primeiro-Tenente Woke dos Babacas", "Melhor Babaca New Generations", "Maior Boca de Sacola"],
+    "Rafael": ["Melhor Apelido", "Bacaca mais Gente Boa", "Melhor Briga"],
+    "Zico": ["Melhor Figurinha", "Babaca mais Favelado"],
+    "Paolla": ["Babaca mais Civilizado", "Melhor Babaca LGBT"],
+    "Neto": ["Bacaca mais Gente Boa", "Melhor Babaca Shippuden"],
+    "Wendel": ["Babaca mais Nortista"],
+    "JP": [],
+    "Theo": [],
+    "Thiago": ["Melhor Babaca Normal", "Bacaca mais bicho do Mato", "Bacaca mais Gente Boa"]
+};
+        
+        return {
+            name: name,
+            photo: name.toLowerCase() + ".png",
+            totalVotes: totalVotes,
+            votesFrom: votesFrom,
+            awards: premiaçõesFixas[name] || [] // <-- Usa o objeto de premiações
+        };
+    });
+    
+    return candidatesData.sort((a, b) => a.totalVotes - b.totalVotes);
+}
+
+
+
+// Fotos específicas para os votantes
+        const voterPhotos = [
+            'calvo.png',        // Votante Calvo
+            'canto.png',        // Votante Canto
+            'arthur.png',       // Votante Labubu
+            'Pedro.png',        // Votante Pedro
+            'Rafael.png',       // Votante Rafael
+            'Filipe.png',       // Votante Zico
+            'lua.png',          // Votante Paolla
+            'Neto.png',         // Votante Neto
+            'wendel.png',       // Votante Wendel
+            'joaopedro.png',    // Votante JP
+            'Theo.png',         // Votante Theo
+            'Thiago.png'        // Votante Thiago
+        ];
+
+        const voterNames = ['Calvo', 'Canto', 'Labubu', 'Pedro', 'Rafael', 'Zico', 'Paolla', 'Neto', 'Wendel', 'JP', 'Theo', 'Thiago'];
+
+        function getSortedVotesData(votesFrom) {
+            return votesFrom
+                .map((votes, index) => ({ votes, index }))
+                .sort((a, b) => a.votes - b.votes);
+        }
+
+        function updateSlide() {
+            const candidate = candidates[currentSlide];
+            const sortedVotes = getSortedVotesData(candidate.votesFrom);
+            const maxVotes = Math.max(...candidate.votesFrom, 1); // Evitar divisão por zero
+            
+            document.getElementById('candidateName').textContent = candidate.name;
+                      let src_pic = candidate.photo;
+                            switch (candidate.photo) {
+                            case "labubu.png":
+                                src_pic = "Arthur.png";
+                                break;
+                            case "jp.png":
+                                src_pic = "joaopedro.png";
+                                break;
+                            
+                            case "paolla.png":
+                                src_pic = "Lua.png";
+                                break;
+
+                            case "zico.png":
+                                src_pic = "Filipe.png";
+                                break;
+                            }
+                console.log(src_pic);
+            document.getElementById('candidatePhoto').src = src_pic;
+            document.getElementById('totalVotes').textContent = candidate.totalVotes;
+            document.getElementById('currentSlide').textContent = currentSlide + 1;
+            document.getElementById('totalSlides').textContent = candidates.length;
+
+            const chart = document.getElementById('chart');
+            chart.innerHTML = '';
+
+            sortedVotes.forEach(({ votes, index }) => {
+                const height = votes > 0 ? Math.max((votes / maxVotes) * 100, 8) : 0;
+                
+                // Usar as fotos específicas dos votantes
+                const voterPhoto = voterPhotos[index] || `https://i.pravatar.cc/150?img=${index + 1}`;
+                
+                // Verificar se o votante é o próprio candidato (voto em si mesmo)
+                const isSelfVote = candidate.name === voterNames[index];
+                const photoClass = `voter-photo ${isSelfVote ? 'self-vote' : ''}`;
+
+                const barContainer = document.createElement('div');
+                barContainer.className = 'bar-container';
+
+                barContainer.innerHTML = `
+                    <img class="${photoClass}" src="${voterPhoto}" alt="${voterNames[index]}" 
+                         title="${isSelfVote ? 'Voto próprio' : voterNames[index]}">
+                    <div class="bar-wrapper">
+                        <span class="vote-count">${votes}</span>
+                        ${votes > 0 ? `<div class="bar color-${index}" style="height: ${height}%"></div>` : ''}
+                    </div>
+                    <span class="voter-name">${voterNames[index]}</span>
+                `;
+
+                chart.appendChild(barContainer);
+            });
+
+            updateDots();
+        }
+
+        function updateDots() {
+            const dotsContainer = document.getElementById('dots');
+            dotsContainer.innerHTML = '';
+
+            candidates.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'dot' + (index === currentSlide ? ' active' : '');
+                dot.onclick = () => {
+                    currentSlide = index;
+                    updateSlide();
+                };
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        function nextSlide() {
+            if (currentSlide === candidates.length - 1) {
+                showFinalScreen();
+            } else {
+                currentSlide = (currentSlide + 1) % candidates.length;
+                updateSlide();
+            }
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + candidates.length) % candidates.length;
+            updateSlide();
+        }
+
+        function showFinalScreen() {
+            document.getElementById('slideView').classList.add('hidden');
+            document.getElementById('finalScreen').classList.add('active');
+            renderFinalScreen();
+        }
+
+        function backToSlides() {
+            document.getElementById('slideView').classList.remove('hidden');
+            document.getElementById('finalScreen').classList.remove('active');
+            currentSlide = 0;
+            updateSlide();
+        }
+
+        function renderFinalScreen() {
+            // Ordenar candidatos por número de prêmios
+            const candidatesByAwards = [...candidates].sort((a, b) => a.awards.length - b.awards.length);
+            
+            const chart = document.getElementById('finalChart');
+            chart.innerHTML = '';
+
+            const maxAwards = Math.max(...candidatesByAwards.map(c => c.awards.length), 1);
+
+            candidatesByAwards.forEach((candidate, idx) => {
+
+                  let src_pic = candidate.photo;
+                            switch (candidate.photo) {
+                            case "labubu.png":
+                                src_pic = "Arthur.png";
+                                break;
+                            case "jp.png":
+                                src_pic = "joaopedro.png";
+                                break;
+                            
+                            case "paolla.png":
+                                src_pic = "Lua.png";
+                                break;
+
+                            case "zico.png":
+                                src_pic = "Filipe.png";
+                                break;
+                            }
+                console.log(src_pic);
+
+                const awardsCount = candidate.awards.length;
+                const height = awardsCount > 0 ? Math.max((awardsCount / maxAwards) * 350, 80) : 40;
+
+                const barContainer = document.createElement('div');
+                barContainer.className = 'final-bar-container';
+
+                const awardsHTML = candidate.awards.length > 0
+                    ? candidate.awards.map(award => `<div class="final-award-item">${award}</div>`).join('')
+                    : '';
+
+                const noAwardsHTML = candidate.awards.length === 0 
+                    ? '<div class="final-no-awards">Sem premiações</div>' 
+                    : '';
+                          
+                barContainer.innerHTML = `
+                    <img class="final-participant-photo" src="${src_pic}" alt="${candidate.name}">
+                    <div class="final-bar-wrapper">
+                        <span class="final-awards-count">${awardsCount}</span>
+                        ${awardsCount > 0 ? `<div class="final-bar" style="height: ${height}px">${awardsHTML}</div>` : noAwardsHTML}
+                    </div>
+                    <div class="final-participant-name">${candidate.name}</div>
+                `;
+
+                chart.appendChild(barContainer);
+            }); 
+        }
+
+        // Suporte para teclas de seta
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        // Inicializar quando a página carregar
+        window.onload = function() {
+            candidates = processRawData();
+            updateSlide();
+        };
+    </script>
+</body>
+</html>
