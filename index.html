@@ -596,15 +596,15 @@ function processRawData() {
             'calvo.png',        // Votante Calvo
             'canto.png',        // Votante Canto
             'arthur.png',       // Votante Labubu
-            'Pedro.png',        // Votante Pedro
-            'Rafael.png',       // Votante Rafael
-            'Filipe.png',       // Votante Zico
+            'pedro.png',        // Votante Pedro
+            'rafael.png',       // Votante Rafael
+            'filipe.png',       // Votante Zico
             'lua.png',          // Votante Paolla
-            'Neto.png',         // Votante Neto
+            'neto.png',         // Votante Neto
             'wendel.png',       // Votante Wendel
             'joaopedro.png',    // Votante JP
-            'Theo.png',         // Votante Theo
-            'Thiago.png'        // Votante Thiago
+            'theo.png',         // Votante Theo
+            'thiago.png'        // Votante Thiago
         ];
 
         const voterNames = ['Calvo', 'Canto', 'Labubu', 'Pedro', 'Rafael', 'Zico', 'Paolla', 'Neto', 'Wendel', 'JP', 'Theo', 'Thiago'];
@@ -661,7 +661,7 @@ function processRawData() {
                 barContainer.className = 'bar-container';
 
                 barContainer.innerHTML = `
-                    <img class="${photoClass}" src="${voterPhoto}" alt="${voterNames[index]}" 
+                    <img class="${photoClass}" src="${voterPhoto.toLowerCase()}" alt="${voterNames[index]}" 
                          title="${isSelfVote ? 'Voto próprio' : voterNames[index]}">
                     <div class="bar-wrapper">
                         <span class="vote-count">${votes}</span>
@@ -790,4 +790,5 @@ function processRawData() {
 </body>
 
 </html>
+
 
