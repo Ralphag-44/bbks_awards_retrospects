@@ -639,7 +639,7 @@ function processRawData() {
                                 break;
                             }
                 console.log(src_pic);
-            document.getElementById('candidatePhoto').src = src_pic;
+            document.getElementById('candidatePhoto').src = src_pic.toLowerCase();
             document.getElementById('totalVotes').textContent = candidate.totalVotes;
             document.getElementById('currentSlide').textContent = currentSlide + 1;
             document.getElementById('totalSlides').textContent = candidates.length;
@@ -763,7 +763,7 @@ function processRawData() {
                     : '';
                           
                 barContainer.innerHTML = `
-                    <img class="final-participant-photo" src="${src_pic}" alt="${candidate.name}">
+                    <img class="final-participant-photo" src="${src_pic.toLowerCase()}" alt="${candidate.name}">
                     <div class="final-bar-wrapper">
                         <span class="final-awards-count">${awardsCount}</span>
                         ${awardsCount > 0 ? `<div class="final-bar" style="height: ${height}px">${awardsHTML}</div>` : noAwardsHTML}
@@ -790,3 +790,4 @@ function processRawData() {
 </body>
 
 </html>
+
